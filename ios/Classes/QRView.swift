@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import MTBBarcodeScanner
+import wn_MTBBarcodeScanner
 
 public class QRView:NSObject,FlutterPlatformView {
     @IBOutlet var previewView: UIView!
@@ -35,7 +35,7 @@ public class QRView:NSObject,FlutterPlatformView {
                 NSLog("Unable to start scanning")
             }
         } else {
-            UIAlertView(title: "Scanning Unavailable", message: "This app does not have permission to access the camera", delegate: nil, cancelButtonTitle: nil, otherButtonTitles: "Ok").show()
+            // UIAlertView(title: "Scanning Unavailable", message: "This app does not have permission to access the camera", delegate: nil, cancelButtonTitle: nil, otherButtonTitles: "Ok").show()
         }
     }
     

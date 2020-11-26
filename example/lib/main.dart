@@ -1,58 +1,157 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
+import 'package:wn_code_scanner/qr_code_scanner.dart';
 
-import 'package:flutter/services.dart';
-import 'package:wn_code_scanner/wn_code_scanner.dart';
+void main() => runApp(MaterialApp(home: QRViewExample()));
 
-void main() {
-  runApp(MyApp());
-}
+const flashOn = 'FLASH ON';
+const flashOff = 'FLASH OFF';
+const frontCamera = 'FRONT CAMERA';
+const backCamera = 'BACK CAMERA';
 
-class MyApp extends StatefulWidget {
-  @override
-  _MyAppState createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
+class QRViewExample extends StatefulWidget {
+  const QRViewExample({
+    Key key,
+  }) : super(key: key);
 
   @override
-  void initState() {
-    super.initState();
-    initPlatformState();
+  State<StatefulWidget> createState() => _QRViewExampleState();
+}
+
+class _QRViewExampleState extends State<QRViewExample> {
+  var qrText = '';
+  var flashState = flashOn;
+  var cameraState = frontCamera;
+  QRViewController controller;
+  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            flex: 4,
+            child: QRView(
+              key: qrKey,
+              onQRViewCreated: _onQRViewCreated,
+              overlay: QrScannerOverlayShape(
+                borderColor: Colors.red,
+                borderRadius: 10,
+                borderLength: 30,
+                borderWidth: 10,
+                cutOutSize: 300,
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 1,
+            child: FittedBox(
+              fit: BoxFit.contain,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Text('This is the result of scan: $qrText'),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        margin: EdgeInsets.all(8),
+                        child: RaisedButton(
+                          onPressed: () {
+                            if (controller != null) {
+                              controller.toggleFlash();
+                              if (_isFlashOn(flashState)) {
+                                setState(() {
+                                  flashState = flashOff;
+                                });
+                              } else {
+                                setState(() {
+                                  flashState = flashOn;
+                                });
+                              }
+                            }
+                          },
+                          child:
+                              Text(flashState, style: TextStyle(fontSize: 20)),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.all(8),
+                        child: RaisedButton(
+                          onPressed: () {
+                            if (controller != null) {
+                              controller.flipCamera();
+                              if (_isBackCamera(cameraState)) {
+                                setState(() {
+                                  cameraState = frontCamera;
+                                });
+                              } else {
+                                setState(() {
+                                  cameraState = backCamera;
+                                });
+                              }
+                            }
+                          },
+                          child:
+                              Text(cameraState, style: TextStyle(fontSize: 20)),
+                        ),
+                      )
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        margin: EdgeInsets.all(8),
+                        child: RaisedButton(
+                          onPressed: () {
+                            controller?.pauseCamera();
+                          },
+                          child: Text('pause', style: TextStyle(fontSize: 20)),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.all(8),
+                        child: RaisedButton(
+                          onPressed: () {
+                            controller?.resumeCamera();
+                          },
+                          child: Text('resume', style: TextStyle(fontSize: 20)),
+                        ),
+                      )
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
+    );
   }
 
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    try {
-      platformVersion = await WnCodeScanner.platformVersion;
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
+  bool _isFlashOn(String current) {
+    return flashOn == current;
+  }
 
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
+  bool _isBackCamera(String current) {
+    return backCamera == current;
+  }
 
-    setState(() {
-      _platformVersion = platformVersion;
+  void _onQRViewCreated(QRViewController controller) {
+    this.controller = controller;
+    controller.scannedDataStream.listen((scanData) {
+      setState(() {
+        qrText = scanData;
+      });
     });
   }
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
-        ),
-      ),
-    );
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 }

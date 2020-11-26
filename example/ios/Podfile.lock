@@ -1,0 +1,29 @@
+PODS:
+  - Flutter (1.0.0)
+  - wn_code_scanner (0.0.1):
+    - Flutter
+    - wn_MTBBarcodeScanner
+  - wn_MTBBarcodeScanner (5.0.15)
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - wn_code_scanner (from `.symlinks/plugins/wn_code_scanner/ios`)
+
+SPEC REPOS:
+  https://github.com/SoulFireWang/podspec.git:
+    - wn_MTBBarcodeScanner
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  wn_code_scanner:
+    :path: ".symlinks/plugins/wn_code_scanner/ios"
+
+SPEC CHECKSUMS:
+  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  wn_code_scanner: 39a4c9989cdc9e892f6b57ed656243b841fbd0fb
+  wn_MTBBarcodeScanner: 6d3c3f4bb1d5ffc9c3be7804fcf7b06a9812038f
+
+PODFILE CHECKSUM: fac4b87f4d8a555b12129299db039dc2752ec0e6
+
+COCOAPODS: 1.10.0

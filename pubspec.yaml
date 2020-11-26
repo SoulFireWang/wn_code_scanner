@@ -1,8 +1,9 @@
 name: wn_code_scanner
 description: A new flutter plugin project.
 version: 0.0.1
-author:
-homepage:
+author: SoulFireWang
+homepage: https://github.com/SoulFireWang/wn_code_scanner
+repository: https://github.com/SoulFireWang/wn_code_scanner.git
 publish_to: http://localhost:8080
 
 environment:
@@ -29,10 +30,10 @@ flutter:
   plugin:
     platforms:
       android:
-        package: com.yuanxiaoer.wn_code_scanner
-        pluginClass: WnCodeScannerPlugin
+        package: net.touchcapture.qr.flutterqr
+        pluginClass: FlutterQrPlugin
       ios:
-        pluginClass: WnCodeScannerPlugin
+        pluginClass: FlutterQrPlugin
 
   # To add assets to your plugin package, add an assets section, like this:
   # assets:
